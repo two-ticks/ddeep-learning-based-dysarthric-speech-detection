@@ -1,11 +1,6 @@
 
 # Define the URLs and target directory
-urls=(
-    "http://www.cs.toronto.edu/~complingweb/data/TORGO/F.tar.bz2"
-    "http://www.cs.toronto.edu/~complingweb/data/TORGO/FC.tar.bz2"
-    "http://www.cs.toronto.edu/~complingweb/data/TORGO/M.tar.bz2"
-    "http://www.cs.toronto.edu/~complingweb/data/TORGO/MC.tar.bz2"
-)
+urls = ("http://www.cs.toronto.edu/~complingweb/data/TORGO/F.tar.bz2" "http://www.cs.toronto.edu/~complingweb/data/TORGO/FC.tar.bz2" "http://www.cs.toronto.edu/~complingweb/data/TORGO/M.tar.bz2" "http://www.cs.toronto.edu/~complingweb/data/TORGO/MC.tar.bz2")
 
 target_dir="/scratch/TORGO"
 
