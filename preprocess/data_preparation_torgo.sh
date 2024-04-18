@@ -5,12 +5,7 @@ BASE_URL="http://www.cs.toronto.edu/~complingweb/data/TORGO/"
 TARGET_DIR="Torgo"
 
 # Define the file names
-FILES=(
-    "F.tar.bz2"
-    "FC.tar.bz2"
-    "M.tar.bz2"
-    "MC.tar.bz2"
-)
+FILES=("F.tar.bz2" "FC.tar.bz2" "M.tar.bz2" "MC.tar.bz2")
 
 # Check if zip files are already present
 missing_files=false
