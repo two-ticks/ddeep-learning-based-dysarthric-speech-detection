@@ -45,6 +45,7 @@ LEARNING_RATE = 0.001
 
 # test parameters
 test_split = .20
+validation_split = .20
 SHUFFLE_DATASET = True
 RANDOM_SEED = 42
 
@@ -368,7 +369,7 @@ if __name__ == "__main__":
   print(cleaned_data)
 
   # select only 500 samples for testing from start and 500 from end
-#   cleaned_data = pd.concat([cleaned_data.head(500), cleaned_data.tail(500)])
+  cleaned_data = pd.concat([cleaned_data.head(100), cleaned_data.tail(100)])
   # print(cleaned_data)
 
 
