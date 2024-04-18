@@ -327,6 +327,7 @@ def collate_fn(batch):
 class FLAG:
     CLEAN = True
     CLIP = True
+    DRY_RUN = True
     BALANCE = False
     TRANSFORM = True
     TRAIN = True
@@ -366,11 +367,12 @@ if __name__ == "__main__":
 
   cleaned_data = pd.read_csv(CLEANED_ANNOTATIONS_FILE)
   # print("Cleaned data")
-  print(cleaned_data)
-
-  # select only 500 samples for testing from start and 500 from end
-  cleaned_data = pd.concat([cleaned_data.head(100), cleaned_data.tail(100)])
   # print(cleaned_data)
+
+  if FLAG.DRY_RUN:
+    # select only 100 samples for testing from start and 100 from end
+    cleaned_data = pd.concat([cleaned_data.head(100), cleaned_data.tail(100)])
+    print(cleaned_data)
 
 
   #   cleaned_data = cleaned_data.head(1000)
