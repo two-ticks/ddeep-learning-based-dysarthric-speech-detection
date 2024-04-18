@@ -231,12 +231,12 @@ def k_fold_validate(dataset, network, device, INSTANT_FREQUENCY_DIR, frame_lengt
       train_frames_data = pd.DataFrame(train_frames_list)
       print(train_frames_data)
 
-      uaspeech_with_instantaneous_frequency_train = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', device="cpu") # NOTE: load data on CPU then shift to GPU
-      uaspeech_with_instantaneous_frequency_test = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'test', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
+      torgo_with_instantaneous_frequency_train = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', device="cpu") # NOTE: load data on CPU then shift to GPU
+      torgo_with_instantaneous_frequency_test = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'test', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
 
       
       # NOTE: load data on CPU then shift to GPU
-      loader = torch.utils.data.DataLoader(uaspeech_with_instantaneous_frequency_train, batch_size=1024, num_workers = 4)
+      loader = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_train, batch_size=1024, num_workers = 4)
       
       sums = 0
       squares = 0
@@ -270,8 +270,8 @@ def k_fold_validate(dataset, network, device, INSTANT_FREQUENCY_DIR, frame_lengt
 
       composed = transforms.transforms.Normalize(mean, std, inplace=False)
 
-      uaspeech_with_instantaneous_frequency_train_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
-      uaspeech_with_instantaneous_frequency_test_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='test', device = "cpu")
+      torgo_with_instantaneous_frequency_train_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
+      torgo_with_instantaneous_frequency_test_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='test', device = "cpu")
 
       # print(data[0].shape)
 
@@ -280,8 +280,8 @@ def k_fold_validate(dataset, network, device, INSTANT_FREQUENCY_DIR, frame_lengt
 
 
 
-      train_dataloader = torch.utils.data.DataLoader(uaspeech_with_instantaneous_frequency_train_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4)
-      test_dataloader  = torch.utils.data.DataLoader(uaspeech_with_instantaneous_frequency_test_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4, collate_fn=collate_fn)
+      train_dataloader = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_train_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4)
+      test_dataloader  = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_test_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4, collate_fn=collate_fn)
       
       
       # initialise CNN network
@@ -324,7 +324,7 @@ def collate_fn(batch):
 # FLAG as Dictionary
 
 class FLAG:
-    CLEAN = False
+    CLEAN = True
     CLIP = True
     BALANCE = False
     TRANSFORM = True
@@ -503,25 +503,25 @@ if __name__ == "__main__":
   validation_frames_data = train_frames_data.sample(frac=validation_split, random_state=RANDOM_SEED).reset_index(drop=True)
   train_frames_data = train_frames_data.drop(validation_frames_data.index).reset_index(drop=True)
 
-  uaspeech_with_instantaneous_frequency_train = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', device="cpu") # NOTE: load data on CPU then shift to GPU
-  uaspeech_with_instantaneous_frequency_test = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'test', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
+  torgo_with_instantaneous_frequency_train = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', device="cpu") # NOTE: load data on CPU then shift to GPU
+  torgo_with_instantaneous_frequency_test = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'test', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
   # TODO : add validation mode to the dataset
   
-  uaspeech_with_instantaneous_frequency_validation = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=validation_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
+  torgo_with_instantaneous_frequency_validation = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=validation_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
   
-  # print("test len", len(uaspeech_with_instantaneous_frequency_test))
+  # print("test len", len(torgo_with_instantaneous_frequency_test))
   
   
 
-#   uaspeech_with_instantaneous_frequency = TorgoSpeechWithInstantaneousFrequency(annotations_file=CLEANED_ANNOTATIONS_FILE, if_dir=INSTANT_FREQUENCY_DIR, device="cpu") # NOTE: load data on CPU then shift to GPU
+#   torgo_with_instantaneous_frequency = TorgoSpeechWithInstantaneousFrequency(annotations_file=CLEANED_ANNOTATIONS_FILE, if_dir=INSTANT_FREQUENCY_DIR, device="cpu") # NOTE: load data on CPU then shift to GPU
 
 
-  print(uaspeech_with_instantaneous_frequency_train[len(uaspeech_with_instantaneous_frequency_train)-1])
-  print(uaspeech_with_instantaneous_frequency_train[1])
+  print(torgo_with_instantaneous_frequency_train[len(torgo_with_instantaneous_frequency_train)-1])
+  print(torgo_with_instantaneous_frequency_train[1])
 
 
 #   # Creating data indices for training and test splits:
-#   dataset_size = len(uaspeech_with_instantaneous_frequency_train)
+#   dataset_size = len(torgo_with_instantaneous_frequency_train)
 #   indices = list(range(dataset_size))
 #   split = int(np.floor(test_split * dataset_size))
 
@@ -537,7 +537,7 @@ if __name__ == "__main__":
 #   print("samplers")
   
   # NOTE: load data on CPU then shift to GPU
-  loader = torch.utils.data.DataLoader(uaspeech_with_instantaneous_frequency_train, batch_size=1024, num_workers = 4)
+  loader = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_train, batch_size=1024, num_workers = 4)
   
   sums = 0
   squares = 0
@@ -571,15 +571,15 @@ if __name__ == "__main__":
 
   composed = transforms.transforms.Normalize(mean, std, inplace=False)
 
-  uaspeech_with_instantaneous_frequency_train_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
-  uaspeech_with_instantaneous_frequency_test_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='test', device = "cpu")
-  uaspeech_with_instantaneous_frequency_validation_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=validation_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
+  torgo_with_instantaneous_frequency_train_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
+  torgo_with_instantaneous_frequency_test_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='test', device = "cpu")
+  torgo_with_instantaneous_frequency_validation_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=validation_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
 
   print(data[0].shape)
 
-  train_dataloader = torch.utils.data.DataLoader(uaspeech_with_instantaneous_frequency_train_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4)
-  test_dataloader  = torch.utils.data.DataLoader(uaspeech_with_instantaneous_frequency_test_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4, collate_fn=collate_fn)
-  validation_dataloader  = torch.utils.data.DataLoader(uaspeech_with_instantaneous_frequency_validation_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4)
+  train_dataloader = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_train_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4)
+  test_dataloader  = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_test_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4, collate_fn=collate_fn)
+  validation_dataloader  = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_validation_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4)
 
   print("test dataloader", len(test_dataloader))
 
@@ -605,7 +605,7 @@ if __name__ == "__main__":
 
   # class_mapping = ["non-dysarthia", "dysarthia"]
 
-  # input_signal, target = uaspeech_with_instantaneous_frequency_transformed[5][0].to(device), uaspeech_with_instantaneous_frequency_transformed[5][1] # [num channels, fr, time] but cnn expects [batchsize, num channels, fr, time]
+  # input_signal, target = torgo_with_instantaneous_frequency_transformed[5][0].to(device), torgo_with_instantaneous_frequency_transformed[5][1] # [num channels, fr, time] but cnn expects [batchsize, num channels, fr, time]
   # input_signal.unsqueeze_(0) #inplace, notice uncsqueeze_(0) means it is applied at 0th index
 
   # print(cnn_instantaneous_frequency(input_signal))
