@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # Define the URLs and target directory
 urls=(
