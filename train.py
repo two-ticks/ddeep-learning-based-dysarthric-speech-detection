@@ -18,7 +18,7 @@ from torch.utils.data.sampler import SubsetRandomSampler, WeightedRandomSampler
 import torchvision.transforms as transforms
 
 from dataset import TorgoSpeechWithInstantaneousFrequency
-from preprocess import calculate_instantaneous_frequency, calculate_and_save_instantaneous_frequency, is_audio_valid
+from preprocess import calculate_and_save_instantaneous_frequency, is_audio_valid
 from network import CNNNetworkIF
 
 # File paths

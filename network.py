@@ -49,7 +49,7 @@ class CNNNetworkIF(nn.Module):
         # ref : https://www.semanticscholar.org/paper/Temporal-Envelope-and-Fine-Structure-Cues-for-Using-Kodrasi/7f89e17b2328fb5cf2f037996637db05a3f3c416
         # self.linear2 = nn.Linear(1024, 2)
 
-        self.fc = nn.Linear(13376, 2) # (in features and out features)
+        self.fc = nn.Linear(4224, 2) # (in features and out features)
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, input_data):
