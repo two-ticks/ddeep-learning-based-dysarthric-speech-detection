@@ -2,6 +2,9 @@
 
 TARGET_DIR="/scratch/Torgo"
 
+mkdir -p "${TARGET_DIR}/dysarthria"
+mkdir -p "${TARGET_DIR}/non_dysarthria"
+
 # Check if zip files are already present
 if [ ! -f "${TARGET_DIR}/F.tar.bz2" ] || [ ! -f "${TARGET_DIR}/FC.tar.bz2" ] || [ ! -f "${TARGET_DIR}/M.tar.bz2" ] || [ ! -f "${TARGET_DIR}/MC.tar.bz2" ]; then
     # If any zip file is not present, download them

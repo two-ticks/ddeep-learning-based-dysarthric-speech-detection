@@ -17,7 +17,7 @@ from torchsummary import summary
 from torch.utils.data.sampler import SubsetRandomSampler, WeightedRandomSampler
 import torchvision.transforms as transforms
 
-from dataset import UASpeechWithInstantaneousFrequency
+from dataset import TorgoSpeechWithInstantaneousFrequency
 from preprocess import calculate_instantaneous_frequency, calculate_and_save_instantaneous_frequency, is_audio_valid
 from network import CNNNetworkIF
 
@@ -231,8 +231,8 @@ def k_fold_validate(dataset, network, device, INSTANT_FREQUENCY_DIR, frame_lengt
       train_frames_data = pd.DataFrame(train_frames_list)
       print(train_frames_data)
 
-      uaspeech_with_instantaneous_frequency_train = UASpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', device="cpu") # NOTE: load data on CPU then shift to GPU
-      uaspeech_with_instantaneous_frequency_test = UASpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'test', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
+      uaspeech_with_instantaneous_frequency_train = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', device="cpu") # NOTE: load data on CPU then shift to GPU
+      uaspeech_with_instantaneous_frequency_test = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'test', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
 
       
       # NOTE: load data on CPU then shift to GPU
@@ -270,8 +270,8 @@ def k_fold_validate(dataset, network, device, INSTANT_FREQUENCY_DIR, frame_lengt
 
       composed = transforms.transforms.Normalize(mean, std, inplace=False)
 
-      uaspeech_with_instantaneous_frequency_train_transformed = UASpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
-      uaspeech_with_instantaneous_frequency_test_transformed = UASpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='test', device = "cpu")
+      uaspeech_with_instantaneous_frequency_train_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
+      uaspeech_with_instantaneous_frequency_test_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='test', device = "cpu")
 
       # print(data[0].shape)
 
@@ -503,17 +503,17 @@ if __name__ == "__main__":
   validation_frames_data = train_frames_data.sample(frac=validation_split, random_state=RANDOM_SEED).reset_index(drop=True)
   train_frames_data = train_frames_data.drop(validation_frames_data.index).reset_index(drop=True)
 
-  uaspeech_with_instantaneous_frequency_train = UASpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', device="cpu") # NOTE: load data on CPU then shift to GPU
-  uaspeech_with_instantaneous_frequency_test = UASpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'test', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
+  uaspeech_with_instantaneous_frequency_train = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', device="cpu") # NOTE: load data on CPU then shift to GPU
+  uaspeech_with_instantaneous_frequency_test = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'test', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
   # TODO : add validation mode to the dataset
   
-  uaspeech_with_instantaneous_frequency_validation = UASpeechWithInstantaneousFrequency(annotations_dataframe=validation_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
+  uaspeech_with_instantaneous_frequency_validation = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=validation_frames_data, if_dir=INSTANT_FREQUENCY_DIR, mode= 'train', frame_length=frame_length, overlap_ratio=overlap_ratio, device="cpu") # NOTE: load data on CPU then shift to GPU
   
   # print("test len", len(uaspeech_with_instantaneous_frequency_test))
   
   
 
-#   uaspeech_with_instantaneous_frequency = UASpeechWithInstantaneousFrequency(annotations_file=CLEANED_ANNOTATIONS_FILE, if_dir=INSTANT_FREQUENCY_DIR, device="cpu") # NOTE: load data on CPU then shift to GPU
+#   uaspeech_with_instantaneous_frequency = TorgoSpeechWithInstantaneousFrequency(annotations_file=CLEANED_ANNOTATIONS_FILE, if_dir=INSTANT_FREQUENCY_DIR, device="cpu") # NOTE: load data on CPU then shift to GPU
 
 
   print(uaspeech_with_instantaneous_frequency_train[len(uaspeech_with_instantaneous_frequency_train)-1])
@@ -571,9 +571,9 @@ if __name__ == "__main__":
 
   composed = transforms.transforms.Normalize(mean, std, inplace=False)
 
-  uaspeech_with_instantaneous_frequency_train_transformed = UASpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
-  uaspeech_with_instantaneous_frequency_test_transformed = UASpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='test', device = "cpu")
-  uaspeech_with_instantaneous_frequency_validation_transformed = UASpeechWithInstantaneousFrequency(annotations_dataframe=validation_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
+  uaspeech_with_instantaneous_frequency_train_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=train_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
+  uaspeech_with_instantaneous_frequency_test_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=test_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='test', device = "cpu")
+  uaspeech_with_instantaneous_frequency_validation_transformed = TorgoSpeechWithInstantaneousFrequency(annotations_dataframe=validation_frames_data, if_dir=INSTANT_FREQUENCY_DIR, transform = composed, mode='train', device = "cpu")
 
   print(data[0].shape)
 
