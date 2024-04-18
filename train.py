@@ -119,7 +119,7 @@ def train_single_epoch(model, data_loader, loss_fn, optimiser, device):
         total_loss += loss.item()
 
     # print(f"loss: {total_loss:.2f}")
-    return total_loss 
+    return total_loss / len(data_loader)
 
 def validate_single_epoch(model, data_loader, loss_fn, device):
     model.eval()
@@ -129,7 +129,7 @@ def validate_single_epoch(model, data_loader, loss_fn, device):
             prediction = model(input.to(device))
             loss = loss_fn(prediction, target.to(device))
             total_loss += loss.item()
-    return total_loss
+    return total_loss / len(data_loader)
         
         
 def train_validate(model, train_data_loader, validation_data_loader, loss_fn, optimiser, device, epochs):
@@ -325,7 +325,7 @@ def collate_fn(batch):
 # FLAG as Dictionary
 
 class FLAG:
-    CLEAN = True
+    CLEAN = False
     CLIP = True
     DRY_RUN = True
     BALANCE = False
@@ -371,7 +371,7 @@ if __name__ == "__main__":
 
   if FLAG.DRY_RUN:
     # select only 100 samples for testing from start and 100 from end
-    cleaned_data = pd.concat([cleaned_data.head(100), cleaned_data.tail(100)])
+    cleaned_data = pd.concat([cleaned_data.head(500), cleaned_data.tail(500)])
     print(cleaned_data)
 
 
@@ -626,6 +626,6 @@ if __name__ == "__main__":
   # torch.save(cnn_instantaneous_frequency.state_dict(), MODEL_PATH)
 
   # turn True for K_Fold 
-  if True:
+  if False:
     k_fold_validate(dataset=cleaned_df, network=CNNNetworkIF, device=device, INSTANT_FREQUENCY_DIR=INSTANT_FREQUENCY_DIR, epochs=40)
 
