@@ -1,29 +1,35 @@
+#!/bin/bash
 
-# Define the URLs and target directory
-urls = ("http://www.cs.toronto.edu/~complingweb/data/TORGO/F.tar.bz2" "http://www.cs.toronto.edu/~complingweb/data/TORGO/FC.tar.bz2" "http://www.cs.toronto.edu/~complingweb/data/TORGO/M.tar.bz2" "http://www.cs.toronto.edu/~complingweb/data/TORGO/MC.tar.bz2")
+# Define the base URL and target directory
+BASE_URL="http://www.cs.toronto.edu/~complingweb/data/TORGO/"
+TARGET_DIR="Torgo"
 
-target_dir="/scratch/TORGO"
+# Define the file names
+FILES=(
+    "F.tar.bz2"
+    "FC.tar.bz2"
+    "M.tar.bz2"
+    "MC.tar.bz2"
+)
 
 # Check if zip files are already present
-all_present=true
-for url in "${urls[@]}"; do
-    if [ ! -f "${target_dir}/${url##*/}" ]; then
-        all_present=false
+missing_files=false
+for file in "${FILES[@]}"; do
+    if [ ! -f "${TARGET_DIR}/${file}" ]; then
+        missing_files=true
         break
     fi
 done
 
 # If any zip file is not present, download them
-if ! $all_present; then
-    for url in "${urls[@]}"; do
-        if [ ! -f "${target_dir}/${url##*/}" ]; then
-            wget "$url" -P "$target_dir"
-        fi
+if $missing_files; then
+    for file in "${FILES[@]}"; do
+        wget "${BASE_URL}${file}" -P "${TARGET_DIR}"
     done
 fi
 
 # Extract files
-tar -xvf "${target_dir}/F.tar.bz2" -C "${target_dir}/dysarthria"
-tar -xvf "${target_dir}/FC.tar.bz2" -C "${target_dir}/non_dysarthria"
-tar -xvf "${target_dir}/M.tar.bz2" -C "${target_dir}/dysarthria"
-tar -xvf "${target_dir}/MC.tar.bz2" -C "${target_dir}/non_dysarthria"
+tar -xvf "${TARGET_DIR}/F.tar.bz2" -C "${TARGET_DIR}/dysarthria"
+tar -xvf "${TARGET_DIR}/FC.tar.bz2" -C "${TARGET_DIR}/non_dysarthria"
+tar -xvf "${TARGET_DIR}/M.tar.bz2" -C "${TARGET_DIR}/dysarthria"
+tar -xvf "${TARGET_DIR}/MC.tar.bz2" -C "${TARGET_DIR}/non_dysarthria"
