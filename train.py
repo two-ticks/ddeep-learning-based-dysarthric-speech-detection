@@ -45,7 +45,7 @@ LEARNING_RATE = 0.001
 
 # test parameters
 test_split = .20
-validation_split = .20
+validation_split = .10
 SHUFFLE_DATASET = True
 RANDOM_SEED = 42
 
@@ -143,7 +143,11 @@ def train_validate(model, train_data_loader, validation_data_loader, loss_fn, op
         validation_loss = validate_single_epoch(model, validation_data_loader, loss_fn, device)
         print(f"Training loss: {training_loss:.2f}", f" Validation loss: {validation_loss:.2f}")
         if early_stopping(model, validation_loss):
-            done = True
+            if LEARNING_RATE > 1.0e-6:
+                LEARNING_RATE /= 2
+                optimiser.param_groups[0]['lr'] = LEARNING_RATE
+            else :
+                done = True
         print("---------------------------")
     print("Finished training")
 
@@ -325,7 +329,7 @@ def collate_fn(batch):
 # FLAG as Dictionary
 
 class FLAG:
-    CLEAN = False
+    CLEAN = True
     CLIP = True
     DRY_RUN = True
     BALANCE = False
@@ -580,9 +584,9 @@ if __name__ == "__main__":
 
   print(data[0].shape)
 
-  train_dataloader = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_train_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4)
-  test_dataloader  = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_test_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4, collate_fn=collate_fn)
-  validation_dataloader  = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_validation_transformed, batch_size=BATCH_SIZE, shuffle=True, num_workers = 4)
+  train_dataloader = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_train_transformed, batch_size=BATCH_SIZE, shuffle=SHUFFLE_DATASET, num_workers = 4)
+  test_dataloader  = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_test_transformed, batch_size=BATCH_SIZE, shuffle=SHUFFLE_DATASET, num_workers = 4, collate_fn=collate_fn)
+  validation_dataloader  = torch.utils.data.DataLoader(torgo_with_instantaneous_frequency_validation_transformed, batch_size=BATCH_SIZE, shuffle=SHUFFLE_DATASET, num_workers = 4)
 
   print("test dataloader", len(test_dataloader))
 
@@ -592,7 +596,8 @@ if __name__ == "__main__":
 
   # initialise loss funtion + optimiser
   loss_fn = nn.CrossEntropyLoss()
-  optimiser = torch.optim.Adam(cnn_instantaneous_frequency.parameters(), lr=LEARNING_RATE)
+#   optimiser = torch.optim.Adam(cnn_instantaneous_frequency.parameters(), lr=LEARNING_RATE)
+  optimiser = torch.optim.SGD(cnn_instantaneous_frequency.parameters(), lr=LEARNING_RATE, momentum=0.9)
   
   # TODO: use compile to exploit JIT
   
@@ -626,6 +631,6 @@ if __name__ == "__main__":
   # torch.save(cnn_instantaneous_frequency.state_dict(), MODEL_PATH)
 
   # turn True for K_Fold 
-  if False:
+  if True:
     k_fold_validate(dataset=cleaned_df, network=CNNNetworkIF, device=device, INSTANT_FREQUENCY_DIR=INSTANT_FREQUENCY_DIR, epochs=40)
 
