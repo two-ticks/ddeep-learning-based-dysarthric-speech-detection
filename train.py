@@ -40,12 +40,12 @@ SAMPLE_RATE = 16000
 # NUM_SAMPLES = 60000
 
 BATCH_SIZE = 128
-EPOCHS = 10
-LEARNING_RATE = 0.001
+EPOCHS = 5
+LEARNING_RATE = 0.01
 
 # test parameters
 test_split = .20
-validation_split = .10
+validation_split = .05
 SHUFFLE_DATASET = True
 RANDOM_SEED = 42
 
@@ -119,7 +119,9 @@ def train_single_epoch(model, data_loader, loss_fn, optimiser, device):
         total_loss += loss.item()
 
     # print(f"loss: {total_loss:.2f}")
-    return total_loss / len(data_loader)
+    # return total_loss / len(data_loader)
+    return loss.item()
+
 
 def validate_single_epoch(model, data_loader, loss_fn, device):
     model.eval()
@@ -129,13 +131,15 @@ def validate_single_epoch(model, data_loader, loss_fn, device):
             prediction = model(input.to(device))
             loss = loss_fn(prediction, target.to(device))
             total_loss += loss.item()
-    return total_loss / len(data_loader)
+    # return total_loss / len(data_loader)
+    return loss.item()
         
         
 def train_validate(model, train_data_loader, validation_data_loader, loss_fn, optimiser, device, epochs):
     done = False
     epoch = 0
     early_stopping = EarlyStopping(patience=5, min_delta=0.001)
+    LEARNING_RATE = optimiser.param_groups[0]['lr']
     while not done and epoch < epochs:
         epoch += 1
         print(f"Epoch {epoch}")
@@ -329,10 +333,10 @@ def collate_fn(batch):
 # FLAG as Dictionary
 
 class FLAG:
-    CLEAN = True
-    CLIP = True
-    DRY_RUN = True
-    BALANCE = False
+    CLEAN = False
+    CLIP = False
+    DRY_RUN = False
+    BALANCE = True
     TRANSFORM = True
     TRAIN = True
    
@@ -446,8 +450,8 @@ if __name__ == "__main__":
     # Assuming cleaned_df is your DataFrame containing the cleaned annotations
 
     # Separate majority and minority classes
-    majority_class = cleaned_df[cleaned_df['is_dysarthria'] == 'non-dysarthria']
-    minority_class = cleaned_df[cleaned_df['is_dysarthria'] == 'dysarthria']
+    majority_class = cleaned_df[cleaned_df['label'] == 'non-dysarthria']
+    minority_class = cleaned_df[cleaned_df['label'] == 'dysarthria']
 
     # Upsample minority class to match the number of samples in the majority class
     minority_upsampled = resample(minority_class, 
@@ -456,25 +460,27 @@ if __name__ == "__main__":
                                 random_state=42)  # Set random state for reproducibility
 
     # Concatenate majority class with upsampled minority class
-    balanced_df = pd.concat([majority_class, minority_upsampled])
+    cleaned_df = pd.concat([majority_class, minority_upsampled])
 
     # Save the balanced DataFrame to a CSV file
     # balanced_df.to_csv(BALANCED_ANNOTATIONS_FILE, index=False)
 
     # Print the balanced DataFrame
-    print(balanced_df)
+    print(cleaned_df)
 
     # Print label counts after balancing
-    label_counts = balanced_df['label'].value_counts()
+    label_counts = cleaned_df['label'].value_counts()
     print(label_counts)
 
     # Calculate the percentage of each label
-    total_samples = len(balanced_df)
+    total_samples = len(cleaned_df)
     percentage_dysarthria = (label_counts.get('dysarthria', 0) / total_samples) * 100
     percentage_non_dysarthria = (label_counts.get('non-dysarthria', 0) / total_samples) * 100
 
     print("Percentage of dysarthria samples:", percentage_dysarthria)
     print("Percentage of non-dysarthria samples:", percentage_non_dysarthria)
+
+    # cleaned_df = balanced_df
 
 
   # TRAINING, TESTING AND INFERENCE
@@ -632,5 +638,5 @@ if __name__ == "__main__":
 
   # turn True for K_Fold 
   if True:
-    k_fold_validate(dataset=cleaned_df, network=CNNNetworkIF, device=device, INSTANT_FREQUENCY_DIR=INSTANT_FREQUENCY_DIR, epochs=40)
+    k_fold_validate(dataset=cleaned_df, network=CNNNetworkIF, device=device, INSTANT_FREQUENCY_DIR=INSTANT_FREQUENCY_DIR, epochs=EPOCHS)
 
