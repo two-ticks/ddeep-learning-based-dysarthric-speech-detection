@@ -4,14 +4,37 @@ import librosa
 import torchaudio
 
 # Function to check if an audio file is readable and its duration is greater than 500ms
-def is_audio_valid(audio_path, threshold_ms=500):
+def is_audio_valid(audio_path, threshold_ms=500, n_fft=160):
     try:
+        # n_fft=160 is too large for uncentered analysis of input signal of length=156
+
         waveform, sample_rate = torchaudio.load(audio_path)
         duration_ms = waveform.size(1) / sample_rate * 1000  # Duration in milliseconds
-        return duration_ms >= threshold_ms
+        signal_length = waveform.size(1)
+
+        return duration_ms >= threshold_ms and signal_length >= n_fft
     except:
         return False
 
+
+# # Function to clip SFCCs into 50-framed tensors and save them as files
+# def clip_and_save_if(sfcc_path, label, save_dir, frame_length=50, overlap_ratio=0.5):
+#     sfcc = np.loadtxt(sfcc_path)
+#     _, total_frames = sfcc.shape
+#     overlap = int(overlap_ratio * frame_length)
+    
+#     paths = []
+#     for frame_idx in range(0, total_frames, overlap):
+#         if frame_idx + frame_length > total_frames:
+#             break
+#         segment = sfcc[:, frame_idx:frame_idx + frame_length]
+#         # Generate a unique filename based on the sfcc_path
+#         filename = os.path.basename(sfcc_path).replace('.sfcc', f'_{frame_idx}_sfcc.npy')
+#         save_path = os.path.join(save_dir, filename)
+#         # Save the SFCC segment data
+#         np.save(save_path, segment)
+#         paths.append({'sfcc_path': save_path, 'label': label})
+#     return paths
 
 # Function to calculate instantaneous frequency
 def calculate_instantaneous_frequency(signal, n_fft, hop_length):

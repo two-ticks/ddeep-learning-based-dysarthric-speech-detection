@@ -4,7 +4,7 @@ import pandas as pd
 from torch.utils.data import Dataset
 import numpy as np
 
-class TorgoSpeechWithInstantaneousFrequency(Dataset):
+class DatasetInstantaneousFrequency(Dataset):
     def __init__(self,
                  annotations_dataframe,
                  if_dir,
