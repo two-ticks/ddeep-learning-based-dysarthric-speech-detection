@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TARGET_DIR="/scratch/Torgo"
+TARGET_DIR="/scratch/DysarthriaDataset"
 
 mkdir -p "${TARGET_DIR}/dysarthria"
 mkdir -p "${TARGET_DIR}/non_dysarthria"

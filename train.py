@@ -27,8 +27,10 @@ from network import CNNNetworkIF
 # ANNOTATIONS_FILE = "/kaggle/input/dysarthria-detection/uaspeech_data/data.csv"
 # AUDIO_DIR = "/kaggle/input/dysarthria-detection/"
 
-non_dysarthria_folder = '/scratch/Torgo/non_dysarthria'
-dysarthria_folder = '/scratch/Torgo/dysarthria'
+dataset_path = '/scratch/DysarthriaDataset'
+
+non_dysarthria_folder = os.path.join(dataset_path, 'non_dysarthria')
+dysarthria_folder = os.path.join(dataset_path, 'dysarthria')
 
 CLEANED_ANNOTATIONS_FILE = f'./if.csv'
 CLIPPED_ANNOTATIONS_FILE = f'./clipped_if.csv'
@@ -37,7 +39,7 @@ MODEL_PATH = f'./cnn_if.pth'
 # Define the directory to save the clipped instantaneous_frequencys
 # save_dir = "/scratch/UASpeech/instant_frequency/"
 # INSTANT_FREQUENCY_DIR = save_dir
-INSTANT_FREQUENCY_DIR = "/scratch/Torgo/instant_frequency"
+INSTANT_FREQUENCY_DIR = os.path.join(dataset_path, 'instant_frequency')
 
 SAMPLE_RATE = 16000
 # NUM_SAMPLES = 60000
@@ -62,7 +64,7 @@ threshold_ms = 500 # Minimum duration of audio in milliseconds
 frame_length = 50
 overlap_ratio = 0.5  # You can adjust this value according to your needs
 
-base_dir = '/scratch/Torgo/'
+# base_dir = '/scratch/Torgo/'
 
 # folders = ['dysarthria_female', 'dysarthria_male', 'non_dysarthria_female', 'non_dysarthria_male']
 
@@ -344,9 +346,9 @@ def collate_fn(batch):
 
 class FLAG:
     CLEAN = False
-    DRY_RUN = True
-    CLIP = False
-    BALANCE = True
+    DRY_RUN = False
+    CLIP = True
+    BALANCE = False
     TRANSFORM = True
     TRAIN = True
    
@@ -589,8 +591,8 @@ if __name__ == "__main__":
   #mean = data[0].mean(axis=0) 
   #std = data[0].std(axis=0) + 1.0e-8
 
-  print(mean)
-  print(std)
+#   print(mean)
+#   print(std)
 
   composed = transforms.transforms.Normalize(mean, std, inplace=False)
 
